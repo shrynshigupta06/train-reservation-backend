@@ -1,11 +1,19 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+require('dotenv').config();
 const { initializeSeats } = require('./models/Seats');
 
 
+const app = express();
+app.use(express.json());
+app.use(cors());
+
+const port = process.env.PORT;
+const dbConnectionString = process.env.DB_CONNECTION_STRING;
+
 // Connect to MongoDB
-mongoose.connect('mongodb://127.0.0.1:27017/train-reservation', {
+mongoose.connect(dbConnectionString, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -18,13 +26,9 @@ mongoose.connect('mongodb://127.0.0.1:27017/train-reservation', {
   });
 
 
-const app = express();
-app.use(express.json());
-app.use(cors());
-
 app.use('/api', require('./routes/seats'));
 
 // Start the server
-app.listen(3000, () => {
+app.listen(port, () => {
   console.log('Server started on port 3000');
 });
